@@ -29,6 +29,9 @@ TYPES = ["B_cell", "T_cell", "Myeloid", "Endothelial", "Fibroblast",
 PRETTY = {"B_cell": "B", "T_cell": "T", "Myeloid": "Myeloid",
           "Endothelial": "Endothelial", "Fibroblast": "Fibroblast",
           "Epithelial": "Epithelial", "Mast": "Mast"}
+# short tick labels (the rotated long names eat vertical space)
+ABBR = {"B_cell": "B", "T_cell": "T", "Myeloid": "Mye", "Endothelial": "Endo",
+        "Fibroblast": "Fibro", "Epithelial": "Epi", "Mast": "Mast"}
 COLORS = {"B_cell": "#4e79a7", "T_cell": "#59a14f", "Myeloid": "#e15759",
           "Endothelial": "#76b7b2", "Fibroblast": "#edc948",
           "Epithelial": "#b07aa1", "Mast": "#ff9da7", "unknown": "#cccccc"}
@@ -88,9 +91,9 @@ def main():
             M[i, j] = (sub == u).mean() if len(sub) else 0
     im = axC.imshow(M, aspect="auto", cmap="Blues", vmin=0, vmax=1)
     axC.set_xticks(range(len(TYPES)))
-    axC.set_xticklabels([PRETTY[t] for t in TYPES], rotation=45, ha="right", fontsize=5)
+    axC.set_xticklabels([ABBR[t] for t in TYPES], rotation=45, ha="right", fontsize=5)
     axC.set_yticks(range(len(TYPES)))
-    axC.set_yticklabels([PRETTY[t] for t in TYPES], fontsize=5)
+    axC.set_yticklabels([ABBR[t] for t in TYPES], fontsize=5)
     axC.set_ylabel("marker type", fontsize=5.5)
     axC.set_xlabel("Leiden type", fontsize=5.5)
     axC.set_title("(b) agreement (purity 0.87)", fontsize=6.5)

@@ -91,7 +91,6 @@ def main():
     axC.set_xticklabels([PRETTY[t] for t in TYPES], rotation=45, ha="right", fontsize=5)
     axC.set_yticks(range(len(TYPES)))
     axC.set_yticklabels([PRETTY[t] for t in TYPES], fontsize=5)
-    axC.set_xlabel("Leiden majority type", fontsize=5.5)
     axC.set_ylabel("marker type", fontsize=5.5)
     axC.set_title("(b) agreement (purity 0.87)", fontsize=6.5)
     cb = fig.colorbar(im, ax=axC, fraction=0.046, pad=0.04)

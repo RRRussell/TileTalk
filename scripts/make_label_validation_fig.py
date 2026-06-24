@@ -92,6 +92,7 @@ def main():
     axC.set_yticks(range(len(TYPES)))
     axC.set_yticklabels([PRETTY[t] for t in TYPES], fontsize=5)
     axC.set_ylabel("marker type", fontsize=5.5)
+    axC.set_xlabel("Leiden type", fontsize=5.5)
     axC.set_title("(b) agreement (purity 0.87)", fontsize=6.5)
     cb = fig.colorbar(im, ax=axC, fraction=0.046, pad=0.04)
     cb.ax.tick_params(labelsize=4.5)

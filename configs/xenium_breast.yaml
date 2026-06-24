@@ -1,0 +1,65 @@
+# CellSeek configuration: 10x Xenium FFPE Human Breast Cancer (Rep1)
+# Janesick et al., Nat Commun 2023. Xenium v1, 313-gene breast panel.
+
+dataset:
+  name: xenium_breast_rep1
+  tag: rep1
+  sample: Xenium_FFPE_Human_Breast_Cancer_Rep1
+  base_url: https://cf.10xgenomics.com/samples/xenium/1.0.1/Xenium_FFPE_Human_Breast_Cancer_Rep1
+  raw_dir: data/raw
+  processed_dir: data/processed
+  files:
+    cell_feature_matrix: Xenium_FFPE_Human_Breast_Cancer_Rep1_cell_feature_matrix.h5
+    cells: Xenium_FFPE_Human_Breast_Cancer_Rep1_cells.csv.gz
+    cell_boundaries: Xenium_FFPE_Human_Breast_Cancer_Rep1_cell_boundaries.csv.gz
+    he_image: Xenium_FFPE_Human_Breast_Cancer_Rep1_he_image.ome.tif
+
+image:
+  # Pixel size of the registered H&E OME-TIFF (from OME PhysicalSizeX), micron/pixel.
+  # Registered H&E shares the Xenium micron coordinate origin: pixel = micron / pixel_size_um.
+  pixel_size_um: 0.363788
+  level: 0                 # pyramid level used for cropping
+  patch_window_px:
+    small: 96              # ~35 um
+    medium: 224            # ~81 um  (default for image encoders)
+    neighborhood: 512      # ~186 um
+  patch_out_size: 224      # resize fed to image encoder
+
+preprocess:
+  min_transcript_counts: 10   # QC: drop cells with fewer transcripts
+  min_cell_area: 0.0
+  normalize_target_sum: null  # null -> median of total counts (scanpy default)
+  celltype_score_threshold: 0.0   # z-scored marker score; >0 means above-average
+  celltype_margin: 0.10           # winning score must beat runner-up by this margin
+  proliferation_quantile: 0.90    # is_proliferating if prolif score above this quantile
+
+neighborhood:
+  k: 15                  # k nearest spatial neighbors
+  radius_um: 50.0        # alternative radius-based neighborhood
+  use: knn               # knn | radius
+  niche_thresholds:
+    bcell_rich: 0.15
+    tcell_rich: 0.15
+    myeloid_rich: 0.15
+    vascular: 0.08
+    tumor_immune_interface_epi: 0.25
+    tumor_immune_interface_imm: 0.15
+
+candidate_pool:
+  size: 20000            # cells used as the shared retrieval pool (all baselines)
+  stratify: true         # stratify by cell_type to keep rare types represented
+  seed: 0
+
+encoders:
+  image: biomedclip      # biomedclip | random
+  text: biomedclip       # biomedclip | oracle
+  biomedclip_hub: hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224
+  batch_size: 256
+  device: cuda
+
+retrieval:
+  topk: [1, 5, 10, 20, 50]
+  ndcg_k: 10
+  baselines: [random, oracle, biomedclip, neighborhood]
+
+seed: 0

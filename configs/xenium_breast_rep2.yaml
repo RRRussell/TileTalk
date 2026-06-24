@@ -1,0 +1,65 @@
+# CellSeek configuration: 10x Xenium FFPE Human Breast Cancer (Rep2)
+# Second replicate of Janesick et al. 2023 — same 313-gene panel as Rep1.
+# Used for cross-sample generalization (incl. train-Rep1 -> test-Rep2 transfer).
+
+dataset:
+  name: xenium_breast_rep2
+  tag: rep2
+  sample: Xenium_FFPE_Human_Breast_Cancer_Rep2
+  base_url: https://cf.10xgenomics.com/samples/xenium/1.0.1/Xenium_FFPE_Human_Breast_Cancer_Rep2
+  raw_dir: data/raw_rep2
+  processed_dir: data/processed_rep2
+  results_dir: results/rep2
+  files:
+    cell_feature_matrix: Xenium_FFPE_Human_Breast_Cancer_Rep2_cell_feature_matrix.h5
+    cells: Xenium_FFPE_Human_Breast_Cancer_Rep2_cells.csv.gz
+    cell_boundaries: Xenium_FFPE_Human_Breast_Cancer_Rep2_cell_boundaries.csv.gz
+    he_image: Xenium_FFPE_Human_Breast_Cancer_Rep2_he_image.ome.tif
+
+image:
+  pixel_size_um: 0.363788
+  level: 0
+  patch_window_px:
+    small: 96
+    medium: 224
+    neighborhood: 512
+  patch_out_size: 224
+
+preprocess:
+  min_transcript_counts: 10
+  min_cell_area: 0.0
+  normalize_target_sum: null
+  celltype_score_threshold: 0.0
+  celltype_margin: 0.10
+  proliferation_quantile: 0.90
+
+neighborhood:
+  k: 15
+  radius_um: 50.0
+  use: knn
+  niche_thresholds:
+    bcell_rich: 0.15
+    tcell_rich: 0.15
+    myeloid_rich: 0.15
+    vascular: 0.08
+    tumor_immune_interface_epi: 0.25
+    tumor_immune_interface_imm: 0.15
+
+candidate_pool:
+  size: 20000
+  stratify: true
+  seed: 0
+
+encoders:
+  image: biomedclip
+  text: biomedclip
+  biomedclip_hub: hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224
+  batch_size: 256
+  device: cuda
+
+retrieval:
+  topk: [1, 5, 10, 20, 50]
+  ndcg_k: 10
+  baselines: [random, oracle, biomedclip, neighborhood]
+
+seed: 0

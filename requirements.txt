@@ -1,0 +1,16 @@
+# TileTalk dependencies (validated on Python 3.8-3.9).
+numpy>=1.24,<2.0
+pandas>=2.0
+scipy>=1.10
+scikit-learn>=1.2
+pyarrow>=12.0
+h5py>=3.8
+pyyaml>=6.0
+matplotlib>=3.7
+# image pipeline (patches + frozen pathology encoders)
+tifffile>=2023.7
+Pillow>=9.4
+torch>=2.0              # CUDA build recommended; CPU works for small pools
+open_clip_torch>=2.32   # BiomedCLIP / UNI2-h via hf-hub
+transformers>=4.30      # PLIP
+faiss-cpu>=1.7          # optional; numpy/sklearn fallback if absent

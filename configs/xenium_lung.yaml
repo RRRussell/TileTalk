@@ -1,0 +1,72 @@
+# CellSeek configuration: 10x Xenium FFPE Human Lung Cancer
+# (Immuno-Oncology profiling panel + custom add-on, 480 genes, Xenium v1 chemistry,
+#  Onboard Analysis 2.0.0). Cross-tissue generalization sample.
+#
+# NOTE: unlike the breast replicates, the post-Xenium H&E is NOT pre-registered to
+# the micron origin; it requires the affine in he_imagealignment.csv. We bake the
+# full transform (micron -> /0.2125 morphology px -> inverse-affine -> full-res H&E
+# px) into lung_align_micron_to_hepixel.csv (validated by centroid overlay).
+
+dataset:
+  name: xenium_lung
+  tag: lung
+  sample: Xenium_V1_Human_Lung_Cancer_Addon_FFPE
+  base_url: https://cf.10xgenomics.com/samples/xenium/2.0.0/Xenium_V1_Human_Lung_Cancer_Addon_FFPE
+  raw_dir: data/raw_lung
+  processed_dir: data/processed_lung
+  results_dir: results/lung
+  files:
+    cell_feature_matrix: Xenium_V1_Human_Lung_Cancer_Addon_FFPE_cell_feature_matrix.h5
+    cells: Xenium_V1_Human_Lung_Cancer_Addon_FFPE_cells.csv.gz
+    cell_boundaries: Xenium_V1_Human_Lung_Cancer_Addon_FFPE_cell_boundaries.csv.gz
+    he_image: Xenium_V1_Human_Lung_Cancer_Addon_FFPE_he_image.ome.tif
+
+image:
+  pixel_size_um: 0.273772          # H&E OME PhysicalSizeX (reference only; affine used)
+  alignment_csv: lung_align_micron_to_hepixel.csv   # micron -> full-res H&E pixel
+  affine_invert: false
+  level: 0
+  patch_window_px:                 # at 0.2738 um/px: ~35 / ~81 / ~186 um
+    small: 128
+    medium: 296
+    neighborhood: 680
+  patch_out_size: 224
+
+preprocess:
+  min_transcript_counts: 10
+  min_cell_area: 0.0
+  normalize_target_sum: null
+  celltype_score_threshold: 0.0
+  celltype_margin: 0.10
+  proliferation_quantile: 0.90
+
+neighborhood:
+  k: 15
+  radius_um: 50.0
+  use: knn
+  niche_thresholds:
+    bcell_rich: 0.15
+    tcell_rich: 0.15
+    myeloid_rich: 0.15
+    vascular: 0.08
+    tumor_immune_interface_epi: 0.25
+    tumor_immune_interface_imm: 0.15
+
+candidate_pool:
+  size: 20000
+  stratify: true
+  seed: 0
+
+encoders:
+  image: biomedclip
+  text: biomedclip
+  biomedclip_hub: hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224
+  batch_size: 256
+  device: cuda
+
+retrieval:
+  topk: [1, 5, 10, 20, 50]
+  ndcg_k: 10
+  baselines: [random, oracle, biomedclip, neighborhood]
+
+seed: 0

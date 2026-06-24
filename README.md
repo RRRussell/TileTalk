@@ -1,10 +1,11 @@
-# TileTalk: Answering Biological Queries in Histology Images
+# TileTalk: Querying H&E at Single-Cell Resolution
 
-TileTalk grounds natural-language biological queries — a cell type, a marker
-gene, a microenvironmental niche — to individual cells and local neighborhoods in
-H&E histology images, supervised by paired 10x Xenium spatial transcriptomics.
-This repository contains the core method and benchmark pipeline for the paper
-*"TileTalk: Answering Biological Queries in Histology Images."*
+TileTalk answers natural-language biological queries — a cell type, a marker
+gene, a microenvironmental niche — by retrieving the individual cells and local
+neighborhoods in H&E histology images that match them, supervised by paired
+10x Xenium spatial transcriptomics. This repository contains the core method and
+benchmark pipeline for the paper
+*"TileTalk: Querying H&E at Single-Cell Resolution."*
 
 ## How it works
 
@@ -13,7 +14,7 @@ This repository contains the core method and benchmark pipeline for the paper
    spatial niches (no manual annotation).
 2. **Encoding** — crop multi-scale H&E patches around each cell and embed them
    with *frozen* pathology encoders (BiomedCLIP, PLIP, and the gated UNI2-h).
-3. **Grounding** — fit a lightweight per-query head over the fused frozen
+3. **Retrieval** — fit a lightweight per-query head over the fused frozen
    features and rank the candidate cell pool. At inference TileTalk uses H&E only.
 
 ## Installation
@@ -47,7 +48,7 @@ Metric tables land in `results/<tag>/`.
 | score with IR metrics | `scripts/evaluate_retrieval.py` |
 
 > In the code, the **`cellseek`** baseline is **TileTalk (ours)** — the per-query
-> grounding head over fused frozen features. Other baselines: `random` (chance
+> head over fused frozen features. Other baselines: `random` (chance
 > floor), `oracle` (transcriptomic upper bound), `biomedclip` / `plip` (zero-shot
 > image–text), `linear_probe` (single-encoder ablation).
 

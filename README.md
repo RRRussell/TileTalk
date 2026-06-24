@@ -50,7 +50,8 @@ Metric tables land in `results/<tag>/`.
 > In the code, the **`cellseek`** baseline is **TileTalk (ours)** — the per-query
 > head over fused frozen features. Other baselines: `random` (chance
 > floor), `oracle` (transcriptomic upper bound), `biomedclip` / `plip` (zero-shot
-> image–text), `linear_probe` (single-encoder ablation).
+> image–text), `linear_probe` (single-encoder ablation), `predexpr`
+> (predict-expression two-stage baseline; `scripts/run_predexpr_baseline.py`).
 
 ## Data
 
